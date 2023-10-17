@@ -13,11 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            // Champs pour gérer la réinitialisation de mot de passe
-            $table->id(); // Ceci créera une clé primaire auto-incrémentée nommée 'id'
-            $table->string('email')->primary(); // L'email de l'utilisateur servant de clé primaire
-            $table->string('token'); // Le token généré pour la réinitialisation de mot de passe
-            $table->timestamp('created_at')->nullable(); // La date et l'heure de création du token pour éventuellement vérifier sa validité
+            $table->bigIncrements('id'); // Ceci créera une clé primaire auto-incrémentée nommée 'id'
+            $table->string('email')->unique();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
     }
 

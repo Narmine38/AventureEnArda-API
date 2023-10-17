@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('password'); // Mot de passe de l'utilisateur
             $table->rememberToken(); // Token pour la fonction "Se souvenir de moi"
             $table->timestamps(); // Crée les champs 'created_at' et 'updated_at'
+            // Ajout de la colonne 'deleted_at' pour Soft Deletes
+            $table->softDeletes();
 
             // Informations pratiques supplémentaires
             $table->string('phone_number')->nullable(); // Numéro de téléphone de l'utilisateur
