@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// ####################
+// Routes publiques (accessibles sans authentification)
+// ####################
+
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+
+
+// Route d'enregistrement
+Route::post('/register', [UserController::class, 'store']); // Enregistrer un nouvel utilisateur
+
+// ####################
+// Routes pour les utilisateurs authentifiés
+// ####################
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Routes pour la gestion du profil utilisateur
+    Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
+    Route::put('/users/{id}', [UserController::class, 'update']);     // Modifier son profil
+
+    // Route pour archiver son propre utilisateur
+    Route::post('/users/{id}/archive', [UserController::class, 'archive']);       // Archiver son propre utilisateur
+});
+
+// ####################
+// Routes pour les administrateurs
+// ####################
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    // Routes pour la gestion des utilisateurs
+    Route::get('/users', [UserController::class, 'index']);                // Liste de tous les utilisateurs
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);      // Supprimer un compte d'utilisateur définitivement
+    Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
+    Route::get('/archived-users/{id}', [UserController::class, 'showArchivedUser']); // Voir un utilisateur archivé spécifique
+    Route::post('/users/{id}/restore', [UserController::class, 'restore']);       // Restaurer un utilisateur archivé
+});
