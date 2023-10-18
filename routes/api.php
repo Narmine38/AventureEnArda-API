@@ -32,6 +32,9 @@ Route::post('/register', [UserController::class, 'store']); // Enregistrer un no
 // ####################
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
     // Routes pour la gestion du profil utilisateur
     Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
     Route::put('/users/{id}', [UserController::class, 'update']);     // Modifier son profil
@@ -52,3 +55,5 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/archived-users/{id}', [UserController::class, 'showArchivedUser']); // Voir un utilisateur archivé spécifique
     Route::post('/users/{id}/restore', [UserController::class, 'restore']);       // Restaurer un utilisateur archivé
 });
+
+
