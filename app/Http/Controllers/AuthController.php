@@ -21,7 +21,14 @@ class AuthController extends Controller
 
         $token = $user->createToken('my-app-token')->plainTextToken;
 
-        return response(['message' => 'Logged in successfully.', 'token' => $token]);
+        $roles = $user->getRoleNames();  // Cette méthode renverra une collection
+
+        return response([
+            'message' => 'Logged in successfully.',
+            'token' => $token,
+            'user' => $user,
+            'roles' => $roles  // Ajoutez les rôles à la réponse
+        ]);
     }
 
 
