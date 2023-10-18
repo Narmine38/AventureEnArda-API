@@ -72,7 +72,11 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'sometimes|required|string|min:8',
+            'city' => 'sometimes|string|max:255',
+            'country' => 'sometimes|string|max:255',
+            'phone_number' => 'sometimes|string|max:15',
+            'postal_code' => 'sometimes|string|max:15',
+            'address' => 'sometimes|string|max:255',
         ]);
 
         if (isset($data['password'])) {
@@ -90,6 +94,7 @@ class UserController extends Controller
             'roles' => $roles
         ]);
     }
+
 
     /**
      * Supprime définitivement un utilisateur de la base de données.
