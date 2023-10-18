@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+// Importation des classes nécessaires.
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // Méthode de connexion.
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -19,17 +21,23 @@ class AuthController extends Controller
 
         $token = $user->createToken('my-app-token')->plainTextToken;
 
-        $cookie = cookie('auth_token', $token, 60, null, null, false, true);
-
-        return response(['message' => 'Logged in successfully.'])->withCookie($cookie);
+        return response(['message' => 'Logged in successfully.', 'token' => $token]);
     }
 
+
+    // Méthode de déconnexion.
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // Vérifie si l'utilisateur est connecté.
+        if ($request->user()) {
+            // Si l'utilisateur est connecté, supprime le token d'accès actuel.
+            $request->user()->currentAccessToken()->delete();
+        }
 
+        // Supprime le cookie 'auth_token'.
         $cookie = Cookie::forget('auth_token');
 
+        // Renvoie une réponse de déconnexion réussie avec le cookie supprimé.
         return response(['message' => 'Logged out successfully.'])->withCookie($cookie);
     }
 }
