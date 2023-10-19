@@ -41,10 +41,7 @@ class AuthController extends Controller
             $request->user()->currentAccessToken()->delete();
         }
 
-        // Supprime le cookie 'auth_token'.
-        $cookie = Cookie::forget('auth_token');
-
-        // Renvoie une réponse de déconnexion réussie avec le cookie supprimé.
-        return response(['message' => 'Logged out successfully.'])->withCookie($cookie);
+        // Renvoie une réponse de déconnexion réussie.
+        return response(['message' => 'Logged out successfully.']);
     }
 }
