@@ -167,8 +167,5 @@ class HebergementController extends Controller
         return response()->json(['data' => $hebergement]);
     }
 
-    public function lieu()
-    {
-        return $this->belongsTo(Lieux::class);
-    }
+
 }
