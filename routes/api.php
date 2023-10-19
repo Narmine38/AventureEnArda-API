@@ -4,6 +4,7 @@ use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HebergementController;
 use App\Http\Controllers\LieuxController;
+use App\Http\Controllers\PersonnageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,10 @@ Route::get('/hebergements/{id}', [HebergementController::class, 'show']);
 // Routes de consultation des activités
 Route::get('/activites', [ActiviteController::class, 'index']);        // Liste de toutes les activités
 Route::get('/activites/{id}', [ActiviteController::class, 'show']);    // Détail d'une activité
+
+// Routes de consultation des personnages
+Route::get('/personnages', [PersonnageController::class, 'index']);        // Liste de tous les personnages
+Route::get('/personnages/{id}', [PersonnageController::class, 'show']);    // Détail d'un personnage
 
 
 
@@ -100,10 +105,19 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/activites', [ActiviteController::class, 'store']);         // Ajouter une activité
     Route::put('/activites/{id}', [ActiviteController::class, 'update']);    // Modifier une activité
     Route::delete('/activites/{id}', [ActiviteController::class, 'destroy']); // Supprimer une activité
-    Route::get('/activites-archived', [ActiviteController::class, 'archivedactivite']);
-    Route::get('/activites-archived/{id}', [ActiviteController::class, 'showArchivedactivite']);
+    Route::get('/activites-archived', [ActiviteController::class, 'archivedActivite']);
+    Route::get('/activites-archived/{id}', [ActiviteController::class, 'showArchivedActivite']);
     Route::post('/activites/{id}/archive', [ActiviteController::class, 'archive']);
     Route::post('/activites/{id}/restore', [ActiviteController::class, 'restore']);
+
+    // Routes pour la gestion des personnages
+    Route::post('/personnages', [PersonnageController::class, 'store']);         // Ajouter un personnage
+    Route::put('/personnages/{id}', [PersonnageController::class, 'update']);    // Modifier un personnage
+    Route::delete('/personnages/{id}', [PersonnageController::class, 'destroy']); // Supprimer un personnage
+    Route::get('/personnages-archived', [PersonnageController::class, 'archivedPersonnage']);
+    Route::get('/personnages-archived/{id}', [PersonnageController::class, 'showArchivedPersonnage']);
+    Route::post('/personnages/{id}/archive', [PersonnageController::class, 'archive']);
+    Route::post('/personnages/{id}/restore', [PersonnageController::class, 'restore']);
 
 });
 
