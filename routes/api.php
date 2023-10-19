@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HebergementController;
 use App\Http\Controllers\LieuxController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,9 @@ Route::post('/register', [UserController::class, 'store']); // Enregistrer un no
 Route::get('/lieux', [LieuxController::class, 'index']);        // Liste de tous les lieux
 Route::get('/lieux/{id}', [LieuxController::class, 'show']);    // Détail d'un lieu
 
+Route::get('/hebergements', [HebergementController::class, 'index']);
+Route::get('/hebergements/{id}', [HebergementController::class, 'show']);
+
 
 
 
@@ -48,9 +52,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Routes pour la gestion du profil utilisateur
     Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
     Route::put('/users/{id}', [UserController::class, 'update']);     // Modifier son profil
-
-    // Route pour archiver son propre utilisateur
     Route::post('/users/{id}/archive', [UserController::class, 'archive']);       // Archiver son propre utilisateur
+
+
 });
 
 // ####################
@@ -78,6 +82,14 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/lieux/{id}/restore', [LieuxController::class, 'restore']);// Restaurer un lieux archivé
     Route::post('/lieux/{id}/archive', [LieuxController::class, 'archive']);
 
+    // Routes pour la gestion des hébergements
+    Route::post('/hebergements', [HebergementController::class, 'store']);         // Ajouter un hébergement
+    Route::put('/hebergements/{id}', [HebergementController::class, 'update']);    // Modifier un hébergement
+    Route::delete('/hebergements/{id}', [HebergementController::class, 'destroy']); // Supprimer un hébergement
+    Route::get('/hebergements-archived', [HebergementController::class, 'archivedHebergement']);
+    Route::get('/hebergements-archived/{id}', [HebergementController::class, 'showArchivedHebegement']);
+    Route::post('/hebergements/{id}/archive', [HebergementController::class, 'archive']);
+    Route::post('/hebergements/{id}/restore', [HebergementController::class, 'restore']);
 
 
 });
