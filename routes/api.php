@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HebergementController;
 use App\Http\Controllers\LieuxController;
 use App\Http\Controllers\PersonnageController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,7 @@ Route::get('/personnages', [PersonnageController::class, 'index']);        // Li
 Route::get('/personnages/{id}', [PersonnageController::class, 'show']);    // Détail d'un personnage
 
 
+Route::post('/reservations/calculate-price', [ReservationController::class, 'calculatePrice']);
 
 
 
@@ -63,6 +65,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
     Route::put('/users/{id}', [UserController::class, 'update']);     // Modifier son profil
     Route::post('/users/{id}/archive', [UserController::class, 'archive']);       // Archiver son propre utilisateur
+
+// Routes pour la gestion des réservations
+    Route::post('/reservations', [ReservationController::class, 'store']);         // Créer une réservation
+    Route::get('/reservations/{id}', [ReservationController::class, 'show']);      // Voir une réservation
+    Route::put('/reservations/{id}', [ReservationController::class, 'update']);    // Modifier une réservation
+    Route::post('/reservations/{id}/archive', [ReservationController::class, 'archive']);       // Restaurer un utilisateur archivé
 
 
 });
@@ -118,6 +126,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/personnages-archived/{id}', [PersonnageController::class, 'showArchivedPersonnage']);
     Route::post('/personnages/{id}/archive', [PersonnageController::class, 'archive']);
     Route::post('/personnages/{id}/restore', [PersonnageController::class, 'restore']);
+
+    Route::get('/reservations', [ReservationController::class, 'index']); // Liste de toutes les réservations
+    Route::get('/reservations-archived', [ReservationController::class, 'archivedReservation']);
+    Route::get('/reservations-archived/{id}', [ReservationController::class, 'showArchivedReservation']);
+    Route::post('/reservations/{id}/restore', [ReservationController::class, 'restore']);
+
+
 
 });
 
