@@ -88,7 +88,7 @@ class ReservationController extends Controller
             'nombre_personnes' => 'integer',
             'statut' => 'string'
         ];
-
+// revoir role ici
         if (auth()->check() && auth()->user()->role === 'admin') {
             $rules['prix'] = 'numeric';
         }
