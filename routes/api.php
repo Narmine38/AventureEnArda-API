@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HebergementController;
 use App\Http\Controllers\LieuxController;
 use App\Http\Controllers\PersonnageController;
@@ -71,6 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/reservations/{id}', [ReservationController::class, 'show']);      // Voir une réservation
     Route::put('/reservations/{id}', [ReservationController::class, 'update']);    // Modifier une réservation
     Route::post('/reservations/{id}/archive', [ReservationController::class, 'archive']);       // Restaurer un utilisateur archivé
+    Route::get('/reservations/user/{userId}', [ReservationController::class, 'getUserReservations']);
 
 
 });
