@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activite;
 use App\Models\Hebergement;
+use App\Models\Lieux;
+use App\Models\Personnage;
 use App\Models\Reservation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
 
 class ReservationController extends Controller
 {
@@ -29,8 +33,9 @@ class ReservationController extends Controller
     /**
      * Enregistre une nouvelle réservation dans la base de données.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return JsonResponse
+     * @throws \Exception
      */
     public function store(Request $request)
     {
@@ -49,15 +54,49 @@ class ReservationController extends Controller
         if (!auth()->check()) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
-        $reservation = Reservation::create($data);
-        return response()->json($reservation, 201);
 
+        $reservation = Reservation::create($data);
+
+        // Récupérez les détails de la réservation
+        $lieu = Lieux::find($data['lieu_id']);
+        $hebergement = Hebergement::find($data['hebergement_id']);
+        $activite = Activite::find($data['activite_id']);
+        $personnage = Personnage::find($data['personnage_id']);
+
+        // Calculez le prix total (ajustez selon votre logique de calcul)
+        $nights = (new \DateTime($data['date_arrivee']))->diff(new \DateTime($data['date_depart']))->days;
+        $totalPrice = $hebergement->prix * $nights * $data['nombre_personnes'];
+
+        // Formatez l'information pour l'e-mail
+        $emailContent = "
+    <strong>Récapitulatif de votre réservation :</strong><br>
+    Lieu : {$lieu->nom}<br>
+    Hébergement : {$hebergement->nom}<br>
+    Activité : $activite->nom<br>
+    Personnage : {$personnage->nom}<br>
+    Date d'arrivée : {$data['date_arrivee']}<br>
+    Date de départ : {$data['date_depart']}<br>
+    Nombre de personnes : {$data['nombre_personnes']}<br>
+    Statut : {$data['statut']}<br>
+    <strong>Prix total : {$totalPrice}€</strong>
+    ";
+
+        // Envoyez l'e-mail avec le contenu formaté
+        $toEmail = auth()->user()->email; // Email de l'utilisateur connecté
+        $subject = "Confirmation de votre réservation";
+        $textBody = "Votre réservation a été confirmée!";
+
+        $emailController = new EmailController();
+        $emailController->sendEmail($toEmail, $subject, $emailContent, $textBody);
+
+        return response()->json($reservation, 201);
     }
+
 
     /**
      * Affiche une réservation spécifique.
      *
-     * @param  string  $id
+     * @param string $id
      * @return JsonResponse
      */
     public function show(string $id)
@@ -69,8 +108,8 @@ class ReservationController extends Controller
     /**
      * Met à jour une réservation spécifique.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $id
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
      * @return JsonResponse
      */
     public function update(Request $request, string $id)
@@ -102,7 +141,7 @@ class ReservationController extends Controller
     /**
      * Supprime une réservation spécifique.
      *
-     * @param  string  $id
+     * @param string $id
      * @return JsonResponse
      */
     public function destroy(string $id): JsonResponse
@@ -181,7 +220,7 @@ class ReservationController extends Controller
     /**
      * Récupère et affiche les détails d'une réservation archivé spécifique par son ID.
      *
-     * @param  string  $id
+     * @param string $id
      * @return JsonResponse
      */
     public function showArchivedReservation(string $id): JsonResponse
@@ -203,6 +242,12 @@ class ReservationController extends Controller
 
         return response()->json(['total' => $hebergementCost]);
     }
+    public function getUserReservations($userId)
+    {
+        $reservations = Reservation::where('user_id', $userId)->get();
+        return response()->json($reservations);
+    }
+
 
 
 
