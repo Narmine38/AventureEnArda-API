@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'localhost,localhost:5173,https://mellifluous-bombolone-e7b8b3.netlify.app/,127.0.0.1,127.0.0.1:8000,::1',
+        'localhost,localhost:5173,https://aventure-en-adra.netlify.app,127.0.0.1,127.0.0.1:8000,::1',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 
