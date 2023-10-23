@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://aventure-en-adra.netlify.app/'],
+    'allowed_origins' => ['https://aventure-en-adra.netlify.app'],
 
     'allowed_origins_patterns' => [],
 
