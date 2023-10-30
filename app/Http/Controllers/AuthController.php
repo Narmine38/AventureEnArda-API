@@ -21,15 +21,20 @@ class AuthController extends Controller
 
         $token = $user->createToken('my-app-token')->plainTextToken;
 
-        $roles = $user->getRoleNames();  // Cette méthode renverra une collection
+        // Créer le cookie
+        $cookie = cookie('auth_token', $token, 60, null, null, true, true, false, 'none');
+
+        $roles = $user->getRoleNames();
+
+        // Renvoyer la réponse avec le cookie
 
         return response([
             'message' => 'Logged in successfully.',
-            'token' => $token,
             'user' => $user,
-            'roles' => $roles  // Ajoutez les rôles à la réponse
-        ]);
+            'roles' => $roles
+        ])->withCookie($cookie);
     }
+
 
 
     // Méthode de déconnexion.
