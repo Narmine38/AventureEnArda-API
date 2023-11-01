@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->bigIncrements('id'); // Ceci créera une clé primaire auto-incrémentée nommée 'id'
+            $table->string('email')->unique(); // Ceci rendra la colonne 'email' unique
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
