@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'localhost,localhost:3000,aventure-en-adra.fr,www.aventure-en-adra.fr,127.0.0.1,127.0.0.1:8000,::1',
+        'localhost,localhost:3000,https://aventure-en-adra.fr,https://www.aventure-en-adra.fr,127.0.0.1,127.0.0.1:8000,::1',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 
