@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -45,6 +46,7 @@ class AuthController extends Controller
 
         // Si aucun utilisateur n'est authentifié, renvoyer une erreur
         if (!$user) {
+            Log::info('Logout attempt without authentication.');
             return response(['message' => 'Not logged in.'], 401);
         }
 
