@@ -5,97 +5,57 @@ namespace App\Http\Controllers;
 // Importation des classes nécessaires.
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     // Méthode de connexion.
-   /* public function login(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response(['message' => 'Invalid credentials.'], 401);
-        }
-
-        $token = $user->createToken('my-app-token')->plainTextToken;
-
-        // Créer le cookie
-        $cookie = cookie('auth_token', $token);
-
-        $roles = $user->getRoleNames();
-
-        // Renvoyer la réponse avec le cookie
-
-        return response([
-            'message' => 'Logged in successfully.',
-            'user' => $user,
-            'roles' => $roles
-        ])->withCookie($cookie);
-    }*/
-
     public function login(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
+        // Valider les données entrantes
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response(['message' => 'Invalid credentials.'], 401);
+        // Vérifier les identifiants de l'utilisateur
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            throw ValidationException::withMessages([
+                'email' => ['Les informations d\'identification fournies sont incorrectes.'],
+            ]);
         }
 
-        $token = $user->createToken('my-app-token')->plainTextToken;
+        $user = Auth::user();
         $roles = $user->getRoleNames();
 
-        return response([
-            'message' => 'Logged in successfully.',
+        // Authentification réussie, retourner une réponse réussie
+        return response()->json([
+            'message' => 'Connexion réussie!',
             'user' => $user,
             'roles' => $roles,
-            'token' => $token
-        ]);
+        ], 200);
     }
-
-    public function logout(Request $request)
-    {
-        // Récupérer l'utilisateur actuellement authentifié
-        $user = $request->user();
-
-        // Si aucun utilisateur n'est authentifié, renvoyer une erreur
-        if (!$user) {
-            Log::info('Logout attempt without authentication.');
-            return response(['message' => 'Not logged in.'], 401);
-        }
-
-        // Révoquer tous les tokens pour cet utilisateur
-        $user->tokens()->delete();
-
-        return response(['message' => 'Logged out successfully.']);
-    }
-
 
 
 
 
 
     // Méthode de déconnexion.
-  /*  public function logout(Request $request)
+    public function logout(Request $request)
     {
-        // Récupérer l'utilisateur actuellement authentifié
-        $user = $request->user();
+        // Déconnecter l'utilisateur
+        Auth::guard('web')->logout();
 
-        // Si aucun utilisateur n'est authentifié, renvoyer une erreur
-        if (!$user) {
-            Log::info('Logout attempt without authentication.');
-            return response(['message' => 'Not logged in.'], 401);
-        }
+        // Invalider la session de l'utilisateur
+        $request->session()->invalidate();
 
-        // Révoquer tous les tokens pour cet utilisateur
-        $user->tokens()->delete();
+        // Régénérer le CSRF token (important pour la sécurité)
+        $request->session()->regenerateToken();
 
-        // Supprimer le cookie
-        $cookie = Cookie::forget('auth_token');
-
-        return response(['message' => 'Logged out successfully.'])->withCookie($cookie);
-    }*/
-
+        return response()->json(['message' => 'Déconnexion réussie!'], 200);
+    }
 }
