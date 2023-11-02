@@ -54,7 +54,7 @@ Route::post('/reservations/calculate-price', [ReservationController::class, 'cal
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Routes pour la gestion du profil utilisateur
     Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
