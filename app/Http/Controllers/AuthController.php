@@ -24,21 +24,24 @@ class AuthController extends Controller
 
         // Vérifier les identifiants de l'utilisateur
         if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['Les informations d\'identification fournies sont incorrectes.'],
-            ]);
+            return response()->json(['error' => 'Les informations d\'identification fournies sont incorrectes.'], 401);
         }
 
         $user = Auth::user();
         $roles = $user->getRoleNames();
+
+        // Créer un nouveau token pour l'utilisateur
+        $token = $user->createToken('my-app-token')->plainTextToken;
 
         // Authentification réussie, retourner une réponse réussie
         return response()->json([
             'message' => 'Connexion réussie!',
             'user' => $user,
             'roles' => $roles,
+            'auth_token' => $token,  // Inclure le token ici
         ], 200);
     }
+
 
 
 
@@ -47,6 +50,13 @@ class AuthController extends Controller
     // Méthode de déconnexion.
     public function logout(Request $request)
     {
+        // Récupérer l'utilisateur actuellement authentifié
+        $user = Auth::user();
+
+        // Révoquer tous les tokens de l'utilisateur pour le déconnecter complètement
+        // Cette étape assure que les tokens générés précédemment ne peuvent plus être utilisés
+        $user->tokens()->delete();
+
         // Déconnecter l'utilisateur
         Auth::guard('web')->logout();
 
@@ -58,4 +68,5 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Déconnexion réussie!'], 200);
     }
+
 }
