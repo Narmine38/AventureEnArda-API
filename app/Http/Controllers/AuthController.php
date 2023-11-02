@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class AuthController extends Controller
 {
     // Méthode de connexion.
-    public function login(Request $request)
+   /* public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
 
@@ -34,12 +34,51 @@ class AuthController extends Controller
             'user' => $user,
             'roles' => $roles
         ])->withCookie($cookie);
+    }*/
+
+    public function login(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response(['message' => 'Invalid credentials.'], 401);
+        }
+
+        $token = $user->createToken('my-app-token')->plainTextToken;
+        $roles = $user->getRoleNames();
+
+        return response([
+            'message' => 'Logged in successfully.',
+            'user' => $user,
+            'roles' => $roles,
+            'token' => $token
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        // Récupérer l'utilisateur actuellement authentifié
+        $user = $request->user();
+
+        // Si aucun utilisateur n'est authentifié, renvoyer une erreur
+        if (!$user) {
+            Log::info('Logout attempt without authentication.');
+            return response(['message' => 'Not logged in.'], 401);
+        }
+
+        // Révoquer tous les tokens pour cet utilisateur
+        $user->tokens()->delete();
+
+        return response(['message' => 'Logged out successfully.']);
     }
 
 
 
+
+
+
     // Méthode de déconnexion.
-    public function logout(Request $request)
+  /*  public function logout(Request $request)
     {
         // Récupérer l'utilisateur actuellement authentifié
         $user = $request->user();
@@ -57,6 +96,6 @@ class AuthController extends Controller
         $cookie = Cookie::forget('auth_token');
 
         return response(['message' => 'Logged out successfully.'])->withCookie($cookie);
-    }
+    }*/
 
 }
