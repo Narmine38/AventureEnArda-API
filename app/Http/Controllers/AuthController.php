@@ -40,13 +40,21 @@ class AuthController extends Controller
     // Méthode de déconnexion.
     public function logout(Request $request)
     {
-        // Vérifie si l'utilisateur est connecté.
-        if ($request->user()) {
-            // Si l'utilisateur est connecté, supprime le token d'accès actuel.
-            $request->user()->currentAccessToken()->delete();
+        // Récupérer l'utilisateur actuellement authentifié
+        $user = $request->user();
+
+        // Si aucun utilisateur n'est authentifié, renvoyer une erreur
+        if (!$user) {
+            return response(['message' => 'Not logged in.'], 401);
         }
 
-        // Renvoie une réponse de déconnexion réussie.
-        return response(['message' => 'Logged out successfully.']);
+        // Révoquer tous les tokens pour cet utilisateur
+        $user->tokens()->delete();
+
+        // Supprimer le cookie
+        $cookie = Cookie::forget('auth_token');
+
+        return response(['message' => 'Logged out successfully.'])->withCookie($cookie);
     }
+
 }
