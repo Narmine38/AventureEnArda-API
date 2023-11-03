@@ -35,10 +35,14 @@ class AuthController extends Controller
         // Révoquer tous les tokens existants
         $user->tokens()->delete();
 
+        $roles = $user->getRoleNames();
         // Créer un nouveau token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Logged in successfully.',
+            'user' => $user,
+            'roles' => $roles,
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
