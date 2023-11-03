@@ -13,60 +13,43 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // Méthode de connexion.
+
     public function login(Request $request)
     {
-        // Valider les données entrantes
+        // Valider les informations de connexion
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
-        // Vérifier les identifiants de l'utilisateur
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['error' => 'Les informations d\'identification fournies sont incorrectes.'], 401);
+        // Récupérer l'utilisateur par e-mail
+        $user = User::where('email', $request->email)->first();
+
+        // Vérifier si l'utilisateur existe et que le mot de passe correspond
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
         }
 
-        $user = Auth::user();
-        $roles = $user->getRoleNames();
-
-        // Créer un nouveau token pour l'utilisateur
-        $token = $user->createToken('my-app-token')->plainTextToken;
-
-        // Authentification réussie, retourner une réponse réussie
-        return response()->json([
-            'message' => 'Connexion réussie!',
-            'user' => $user,
-            'roles' => $roles,
-            'auth_token' => $token,  // Inclure le token ici
-        ], 200);
-    }
-
-
-
-
-
-
-    // Méthode de déconnexion.
-    public function logout(Request $request)
-    {
-        // Récupérer l'utilisateur actuellement authentifié
-        $user = Auth::user();
-
-        // Révoquer tous les tokens de l'utilisateur pour le déconnecter complètement
-        // Cette étape assure que les tokens générés précédemment ne peuvent plus être utilisés
+        // Révoquer tous les tokens existants
         $user->tokens()->delete();
 
-        // Déconnecter l'utilisateur
-        Auth::guard('web')->logout();
+        // Créer un nouveau token
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Invalider la session de l'utilisateur
-        $request->session()->invalidate();
-
-        // Régénérer le CSRF token (important pour la sécurité)
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'Déconnexion réussie!'], 200);
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ]);
     }
 
+
+    public function logout(Request $request)
+    {
+        // Révoquer le token de l'utilisateur
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Logged out successfully!']);
+    }
 }
