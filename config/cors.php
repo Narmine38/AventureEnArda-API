@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://aventure-en-adra.fr', 'https://www.aventure-en-adra.fr'],
+    'allowed_origins' => ['https://aventure-en-adra.fr', 'https://www.aventure-en-adra.fr', 'http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 

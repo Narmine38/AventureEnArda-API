@@ -83,10 +83,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
     Route::get('/archived-users/{id}', [UserController::class, 'showArchivedUser']); // Voir un utilisateur archivé spécifique
     Route::post('/users/{id}/restore', [UserController::class, 'restore']);       // Restaurer un utilisateur archivé
-    Route::post('/users/{id}/archive', [UserController::class, 'archive']);       // Restaurer un utilisateur archivé
-
-
-
+    
     // Routes pour la gestion des lieux
     Route::post('/lieux', [LieuxController::class, 'store']);         // Ajouter un lieu
     Route::put('/lieux/{id}', [LieuxController::class, 'update']);    // Modifier un lieu
