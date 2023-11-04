@@ -75,7 +75,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Routes pour les administrateurs
 // ####################
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Routes pour la gestion des utilisateurs
     Route::get('/users', [UserController::class, 'index']);                // Liste de tous les utilisateurs
