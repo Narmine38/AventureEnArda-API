@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,22 +23,23 @@ use Illuminate\Support\Facades\Route;
 
 // Routes d'authentification
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [UserController::class, 'store']); // Enregistrer un nouvel utilisateur
+Route::post('/register', [UserController::class, 'store']);
+
+// Routes de consultation des lieu
+Route::get('/place', [PlaceController::class, 'index']);
+Route::get('/place/{id}', [PlaceController::class, 'show']);
 
 // ####################
 // Routes pour les utilisateurs authentifiés
 // ####################
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-
     // Routes pour la gestion du profil utilisateur
-    Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
-    Route::put('/users/{id}', [UserController::class, 'update']);     // Modifier son profil
-    Route::post('/users/{id}/archive', [UserController::class, 'archive']);       // Archiver son propre utilisateur
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::post('/users/{id}/archive', [UserController::class, 'archive']);
 
 
 
@@ -55,6 +57,15 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/users/{id}/destroy', [UserController::class, 'destroy']);      // Supprimer un compte d'utilisateur définitivement
     Route::get('/archived-users/{id}', [UserController::class, 'showArchivedUser']); // Voir un utilisateur archivé spécifique
     Route::post('/users/{id}/restore', [UserController::class, 'restore']);       // Restaurer un utilisateur archivé
+
+    // Routes pour la gestion des lieu
+    Route::post('/place', [PlaceController::class, 'store']);         // Ajouter un lieu
+    Route::put('/place/{id}', [PlaceController::class, 'update']);    // Modifier un lieu
+    Route::delete('/place/{id}', [PlaceController::class, 'destroy']); // Supprimer un lieu
+    Route::get('/archived-place', [PlaceController::class, 'archivedLieu']); // Liste des lieux archivés
+    Route::get('/archived-place/{id}', [PlaceController::class, 'showArchivedLieu']); // Voir un lieu archivé spécifique
+    Route::post('/place/{id}/restore', [PlaceController::class, 'restore']); // Restaurer un lieu archivé
+    Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // arcjive un lieu
 
 
 });
