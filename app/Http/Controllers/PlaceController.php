@@ -139,7 +139,7 @@ class PlaceController extends Controller
      *
      * @return JsonResponse La réponse contenant la liste des lieux archivés.
      */
-    public function archived(): JsonResponse
+    public function archivedPlace(): JsonResponse
     {
         $archivedPlaces = Place::onlyTrashed()->get(); // Obtient uniquement les lieux archivés.
         return response()->json(['data' => $archivedPlaces]); // Renvoie la liste des lieux archivés avec un statut HTTP 200.

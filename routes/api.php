@@ -62,10 +62,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/place', [PlaceController::class, 'store']);         // Ajouter un lieu
     Route::put('/place/{id}', [PlaceController::class, 'update']);    // Modifier un lieu
     Route::delete('/place/{id}', [PlaceController::class, 'destroy']); // Supprimer un lieu
-    Route::get('/archived-place', [PlaceController::class, 'archivedLieu']); // Liste des lieux archivés
+    Route::get('/archived-place', [PlaceController::class, 'archivedPlace']); // Liste des lieux archivés
     Route::get('/archived-place/{id}', [PlaceController::class, 'showArchivedLieu']); // Voir un lieu archivé spécifique
     Route::post('/place/{id}/restore', [PlaceController::class, 'restore']); // Restaurer un lieu archivé
-    Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // arcjive un lieu
+    //Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // archive un lieu
 
 
 });
