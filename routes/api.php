@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 // Routes d'authentification
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [UserController::class, 'store']); // Enregistrer un nouvel utilisateur
-Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
 
 // ####################
 // Routes pour les utilisateurs authentifiés
@@ -33,6 +32,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/users', [UserController::class, 'index']);                // Liste de tous les utilisateurs
+    Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
+
 
     // Routes pour la gestion du profil utilisateur
     Route::get('/users/{id}', [UserController::class, 'show']);       // Voir son profil
