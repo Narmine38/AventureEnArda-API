@@ -65,7 +65,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/archived-place', [PlaceController::class, 'archivedPlace']); // Liste des lieux archivés
     Route::get('/archived-place/{id}', [PlaceController::class, 'showArchivedLieu']); // Voir un lieu archivé spécifique
     Route::post('/place/{id}/restore', [PlaceController::class, 'restore']); // Restaurer un lieu archivé
-    //Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // archive un lieu
+    Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // archive un lieu
 
 
 });
