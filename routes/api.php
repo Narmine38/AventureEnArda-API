@@ -31,8 +31,7 @@ Route::post('/register', [UserController::class, 'store']); // Enregistrer un no
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/users', [UserController::class, 'index']);                // Liste de tous les utilisateurs
-    Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
+
 
 
     // Routes pour la gestion du profil utilisateur
@@ -51,6 +50,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Routes pour la gestion des utilisateurs
+    Route::get('/users', [UserController::class, 'index']);                // Liste de tous les utilisateurs
+    Route::get('/archived-users', [UserController::class, 'archivedUsers']);    // Liste des utilisateurs archivés
     Route::delete('/users/{id}', [UserController::class, 'destroy']);      // Supprimer un compte d'utilisateur définitivement
     Route::get('/archived-users/{id}', [UserController::class, 'showArchivedUser']); // Voir un utilisateur archivé spécifique
     Route::post('/users/{id}/restore', [UserController::class, 'restore']);       // Restaurer un utilisateur archivé
