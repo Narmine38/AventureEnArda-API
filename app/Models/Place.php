@@ -26,26 +26,8 @@ class Place extends Model
         'story',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'integer',
-    ];
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
+    public function accommodations()
     {
-        return 'name';
+        return $this->hasMany(Accommodation::class);
     }
-
-    // If you have any relationships like nearby places or location types, define them here
-    // For example, a Place might have many events or belong to a certain region
-    // Define those relationships as methods below
 }

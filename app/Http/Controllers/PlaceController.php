@@ -151,7 +151,7 @@ class PlaceController extends Controller
      * @param int $id L'identifiant du lieu archivé.
      * @return JsonResponse La réponse contenant les détails du lieu archivé.
      */
-    public function showArchived($id): JsonResponse
+    public function showArchivedPlace($id): JsonResponse
     {
         // Utilisez la méthode onlyTrashed pour récupérer uniquement les lieux archivés.
         $archivedPlace = Place::onlyTrashed()->findOrFail($id); // Trouve le lieu archivé par son ID ou échoue avec une erreur 404.
