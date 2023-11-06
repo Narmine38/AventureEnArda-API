@@ -15,7 +15,7 @@ class CharacterController extends Controller
      */
     public function index(): JsonResponse
     {
-        $character = Character::with('lieu')->get();
+        $character = Character::with('place')->get();
         return response()->json($character, 200);
     }
 

@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/activity/{id}/restore', [ActiviteController::class, 'restore']);
 
     // Routes pour la gestion des personnages
-    Route::post('/characters', [CharacterController::class, 'store']);         // Ajouter un personnage
+    Route::post('/character', [CharacterController::class, 'store']);         // Ajouter un personnage
     Route::put('/character/{id}', [CharacterController::class, 'update']);    // Modifier un personnage
     Route::delete('/character/{id}', [CharacterController::class, 'destroy']); // Supprimer un personnage
     Route::get('/characters-archived', [CharacterController::class, 'archivedCharacters']);
