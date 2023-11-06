@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             UsersTableSeeder::class,
             PlacesTableSeeder::class,
+            AccommodationSeeder::class,
+
 
         ]);
     }
