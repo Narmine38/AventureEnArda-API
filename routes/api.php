@@ -30,6 +30,9 @@ Route::post('/register', [UserController::class, 'store']);
 Route::get('/place', [PlaceController::class, 'index']);
 Route::get('/place/{id}', [PlaceController::class, 'show']);
 
+Route::get('/accommodation', [AccommodationController::class, 'index']);
+Route::get('/accommodation/{id}', [AccommodationController::class, 'show']);
+
 // ####################
 // Routes pour les utilisateurs authentifiés
 // ####################
