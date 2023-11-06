@@ -35,4 +35,9 @@ class Place extends Model
     {
         return $this->hasMany(Activite::class);
     }
+
+    public function character()
+    {
+        return $this->hasMany(Character::class);
+    }
 }

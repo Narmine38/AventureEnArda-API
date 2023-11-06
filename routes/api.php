@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -37,6 +38,10 @@ Route::get('/accommodation/{id}', [AccommodationController::class, 'show']);
 // Routes de consultation des activités
 Route::get('/activities', [ActiviteController::class, 'index']);        // Liste de toutes les activités
 Route::get('/activity/{id}', [ActiviteController::class, 'show']);    // Détail d'une activité
+
+// Routes de consultation des personnages
+Route::get('/characters', [CharacterController::class, 'index']);        // Liste de tous les personnages
+Route::get('/character/{id}', [CharacterController::class, 'show']);    // Détail d'un personnage
 
 // ####################
 // Routes pour les utilisateurs authentifiés
@@ -93,6 +98,15 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/activity-archived/{id}', [ActiviteController::class, 'showArchivedActivity']);
     Route::post('/activity/{id}/archive', [ActiviteController::class, 'archive']);
     Route::post('/activity/{id}/restore', [ActiviteController::class, 'restore']);
+
+    // Routes pour la gestion des personnages
+    Route::post('/characters', [CharacterController::class, 'store']);         // Ajouter un personnage
+    Route::put('/character/{id}', [CharacterController::class, 'update']);    // Modifier un personnage
+    Route::delete('/character/{id}', [CharacterController::class, 'destroy']); // Supprimer un personnage
+    Route::get('/characters-archived', [CharacterController::class, 'archivedCharacters']);
+    Route::get('/character-archived/{id}', [CharacterController::class, 'showArchivedCharacter']);
+    Route::post('/character/{id}/archive', [CharacterController::class, 'archive']);
+    Route::post('/character/{id}/restore', [CharacterController::class, 'restore']);
 
 
 });
