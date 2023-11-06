@@ -147,7 +147,7 @@ class CharacterController extends Controller
     public function archivedCharacters(): JsonResponse
     {
         // Récupère uniquement les personnages qui sont "soft deleted" avec leur relation "lieu"
-        $character = Character::onlyTrashed()->with('lieu')->get();
+        $character = Character::onlyTrashed()->with('place')->get();
         return response()->json(['data' => $character]);
     }
 
