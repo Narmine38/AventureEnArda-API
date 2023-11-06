@@ -32,7 +32,7 @@ class ActiviteController extends Controller
             'description' => 'required|string',
             'picture' => 'sometimes|required|string', // Si 'photo' est un fichier, modifiez cette validation en conséquence
             'type' => 'required|string',
-            'age_rang' => 'required|string',
+            'age_range' => 'required|string',
             'place_id' => 'required|integer|exists:places,id'
         ]);
 
