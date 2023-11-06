@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccommodationController;
+use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
@@ -32,6 +33,10 @@ Route::get('/place/{id}', [PlaceController::class, 'show']);
 
 Route::get('/accommodation', [AccommodationController::class, 'index']);
 Route::get('/accommodation/{id}', [AccommodationController::class, 'show']);
+
+// Routes de consultation des activités
+Route::get('/activities', [ActiviteController::class, 'index']);        // Liste de toutes les activités
+Route::get('/activity/{id}', [ActiviteController::class, 'show']);    // Détail d'une activité
 
 // ####################
 // Routes pour les utilisateurs authentifiés
@@ -79,6 +84,15 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/accommodation-archived/{id}', [AccommodationController::class, 'showArchivedAccommodation']);
     Route::post('/accommodation/{id}/archive', [AccommodationController::class, 'archive']);
     Route::post('/accommodation/{id}/restore', [AccommodationController::class, 'restore']);
+
+    // Routes pour la gestion des activités
+    Route::post('/activity', [ActiviteController::class, 'store']);         // Ajouter une activité
+    Route::put('/activity/{id}', [ActiviteController::class, 'update']);    // Modifier une activité
+    Route::delete('/activity/{id}', [ActiviteController::class, 'destroy']); // Supprimer une activité
+    Route::get('/activities-archived', [ActiviteController::class, 'archivedActivity']);
+    Route::get('/activity-archived/{id}', [ActiviteController::class, 'showArchivedActivity']);
+    Route::post('/activity/{id}/archive', [ActiviteController::class, 'archive']);
+    Route::post('/activity/{id}/restore', [ActiviteController::class, 'restore']);
 
 
 });
