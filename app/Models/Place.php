@@ -30,4 +30,9 @@ class Place extends Model
     {
         return $this->hasMany(Accommodation::class);
     }
+
+    public function activites()
+    {
+        return $this->hasMany(Activite::class);
+    }
 }
