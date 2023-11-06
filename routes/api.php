@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccommodationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\UserController;
@@ -63,9 +64,18 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::put('/place/{id}', [PlaceController::class, 'update']);    // Modifier un lieu
     Route::delete('/place/{id}', [PlaceController::class, 'destroy']); // Supprimer un lieu
     Route::get('/archived-place', [PlaceController::class, 'archivedPlace']); // Liste des lieux archivés
-    Route::get('/archived-place/{id}', [PlaceController::class, 'showArchivedLieu']); // Voir un lieu archivé spécifique
+    Route::get('/archived-place/{id}', [PlaceController::class, 'showArchivedPlace']); // Voir un lieu archivé spécifique
     Route::post('/place/{id}/restore', [PlaceController::class, 'restore']); // Restaurer un lieu archivé
     Route::post('/place/{id}/archive', [PlaceController::class, 'archive']); // archive un lieu
+
+    // Routes pour la gestion des hébergements
+    Route::post('/accommodation', [AccommodationController::class, 'store']);         // Ajouter un hébergement
+    Route::put('/accommodation/{id}', [AccommodationController::class, 'update']);    // Modifier un hébergement
+    Route::delete('/accommodation/{id}', [AccommodationController::class, 'destroy']); // Supprimer un hébergement
+    Route::get('/accommodation-archived', [AccommodationController::class, 'archivedAccommodation']);
+    Route::get('/accommodation-archived/{id}', [AccommodationController::class, 'showArchivedAccommodation']);
+    Route::post('/accommodation/{id}/archive', [AccommodationController::class, 'archive']);
+    Route::post('/accommodation/{id}/restore', [AccommodationController::class, 'restore']);
 
 
 });
