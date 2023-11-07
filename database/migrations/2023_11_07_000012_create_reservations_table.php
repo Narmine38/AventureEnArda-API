@@ -22,6 +22,7 @@ class CreateReservationsTable extends Migration
             $table->unsignedBigInteger('character_id')->nullable();
             $table->date('arrival_date')->nullable();
             $table->date('starting_date')->nullable();
+            $table->decimal('price', 5, 2); // Ajoutez cette ligne pour le champ prix
             $table->integer('number_of_people');  // Champ pour le nombre de personnes
             $table->enum('statut', ['pending', 'approved', 'canceled'])->default('pending'); // Champ pour le statut
             $table->timestamps();

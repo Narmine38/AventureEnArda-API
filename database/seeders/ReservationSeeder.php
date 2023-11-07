@@ -32,7 +32,9 @@ class ReservationSeeder extends Seeder
             'arrival_date' => now()->addDays(5),
             'starting_date' => now()->addDays(12),
             'number_of_people' => rand(1, 5),  // Exemple de génération d'un nombre aléatoire entre 1 et 5
-            'statut' => 'pending' // Par exemple, pour définir le statut par défaut comme "en attente"
+            'statut' => 'pending', // Par exemple, pour définir le statut par défaut comme "en attente"
+            'price' => 450
+
         ]);
     }
 }

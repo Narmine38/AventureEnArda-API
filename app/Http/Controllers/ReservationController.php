@@ -9,7 +9,7 @@ use App\Models\Place;
 use App\Models\Reservation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use DateTime;
 
 class ReservationController extends Controller
 {
@@ -34,7 +34,7 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         // Validate the request data
-        $data = $request->validate([
+        $validatedData = $request->validate([
             'user_id' => 'required|integer',
             'place_id' => 'required|integer',
             'accommodation_id' => 'required|integer',
@@ -43,25 +43,34 @@ class ReservationController extends Controller
             'arrival_date' => 'required|date',
             'starting_date' => 'required|date',
             'number_of_people' => 'required|integer',
-            'statut' => 'required|string'
+            'statut' => 'required|string',
+            // 'price' field is not directly submitted by user but calculated from 'accommodation_id'
         ]);
 
-        // Check if the user is authenticated
         if (!auth()->check()) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
 
-        // Create the reservation
-        $reservation = Reservation::create($data);
+        // Retrieve the accommodation price from the database using the 'accommodation_id'
+        $accommodation = Accommodation::find($validatedData['accommodation_id']);
+        if (!$accommodation) {
+            return response()->json(['message' => 'Accommodation not found'], 404);
+        }
+
+        // Calculate the number of nights for the stay
+        $nights = (new \DateTime($validatedData['arrival_date']))->diff(new \DateTime($validatedData['starting_date']))->days;
+
+        // Calculate the price
+        $price = $accommodation->price * $validatedData['number_of_people'] * $nights;
+
+        // Include the price in the data to be stored
+        $validatedData['price'] = $price;
+
+        // Create the reservation with the calculated price
+        $reservation = Reservation::create($validatedData);
 
         // Load related models
         $reservation->load(['place', 'accommodation', 'activity', 'character']);
-
-        // Calculate the price using the loaded relationship
-        $price = $reservation->price; // This will trigger the getPriceAttribute accessor in the Reservation model
-
-        // Append the price to the reservation object if you want to return it as well
-        $reservation->price = $price;
 
         // Return the reservation data along with the status code 201
         return response()->json($reservation, 201);
@@ -91,45 +100,22 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
 
-        $rules = [
-            'user_id' => 'integer',
-            'place_id' => 'integer',
-            'accommodation_id' => 'integer',
-            'activity_id' => 'integer',
-            'character_id' => 'integer',
-            'arrival_date' => 'date',
-            'starting_date' => 'date',
-            'number_of_people' => 'integer',
-            'statut' => 'string'
-        ];
-// revoir role ici
-        if (auth()->check() && auth()->user()->getRoleNames() === 'admin') {
-            $rules['price'] = 'numeric';
-        }
+        $data = $request->validate([
+            'user_id' => 'sometimes|integer',
+            'place_id' => 'sometimes|integer',
+            'accommodation_id' => 'sometimes|integer',
+            'activity_id' => 'sometimes|integer',
+            'character_id' => 'sometimes|integer',
+            'arrival_date' => 'sometimes|date',
+            'starting_date' => 'sometimes|date',
+            'number_of_people' => 'sometimes|integer',
+            'statut' => 'sometimes|string',
+        ]);
 
-        $data = $request->validate($rules);
+        // Update the reservation with new data without changing the price
         $reservation->update($data);
 
         return response()->json($reservation, 200);
-    }
-
-    /**
-     * Supprime une réservation spécifique.
-     *
-     * @param string $id
-     * @return JsonResponse
-     */
-    public function destroy(string $id): JsonResponse
-    {
-        // Essayez d'abord de trouver la réservation, y compris ceux qui sont "soft deleted".
-        $reservation = Reservation::withTrashed()->findOrFail($id);
-
-        // Supprimez définitivement l'hebergment.
-        $reservation->forceDelete();
-
-        return response()->json([
-            'message' => 'réservation deleted permanently!'
-        ], 204);
     }
 
     /**

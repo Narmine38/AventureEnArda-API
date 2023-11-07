@@ -23,8 +23,9 @@ class Reservation extends Model
         'character_id',
         'arrival_date',
         'starting_date',
-        'number_of_people',  // Ajouté ici
-        'statut',  // Ajouté ici
+        'number_of_people',
+        'statut',
+        'price', // Ensure 'price' is mass assignable
     ];
 
     /**
@@ -62,13 +63,10 @@ class Reservation extends Model
     {
         return $this->belongsTo(Place::class);
     }
-    public function getPriceAttribute()
+    public function calculatePrice($nights, $numberOfPeople, $accommodationPrice)
     {
-        $nights = (new \DateTime($this->arrival_date))->diff(new \DateTime($this->starting_date))->days;
-
-        $accommodatiionCost = $this->accommodation->price * $nights * $this->number_of_people;
-
-        return $accommodatiionCost;
+        // Assuming $accommodationPrice is passed in or retrieved from related Accommodation
+        $this->price = $accommodationPrice * $nights * $numberOfPeople;
     }
 
 }
