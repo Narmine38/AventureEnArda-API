@@ -33,6 +33,7 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the request data
         $data = $request->validate([
             'user_id' => 'required|integer',
             'place_id' => 'required|integer',
@@ -45,16 +46,24 @@ class ReservationController extends Controller
             'statut' => 'required|string'
         ]);
 
+        // Check if the user is authenticated
         if (!auth()->check()) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
 
+        // Create the reservation
         $reservation = Reservation::create($data);
+
+        // Load related models
         $reservation->load(['place', 'accommodation', 'activity', 'character']);
 
-        // Sending an email to the user with reservation details is typically handled in an event listener or job for better separation of concerns.
-        // Here, for simplification, we will assume that you have an event or job set up for this purpose.
+        // Calculate the price using the loaded relationship
+        $price = $reservation->price; // This will trigger the getPriceAttribute accessor in the Reservation model
 
+        // Append the price to the reservation object if you want to return it as well
+        $reservation->price = $price;
+
+        // Return the reservation data along with the status code 201
         return response()->json($reservation, 201);
     }
 
