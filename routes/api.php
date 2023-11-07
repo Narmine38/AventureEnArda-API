@@ -5,6 +5,7 @@ use App\Http\Controllers\ActiviteController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::post('/users/{id}/archive', [UserController::class, 'archive']);
+
+    // Routes pour la gestion des réservations
+    Route::post('/reservations', [ReservationController::class, 'store']);         // Créer une réservation
+    Route::get('/reservations/{id}', [ReservationController::class, 'show']);      // Voir une réservation
+    Route::put('/reservations/{id}', [ReservationController::class, 'update']);    // Modifier une réservation
+    Route::post('/reservations/{id}/archive', [ReservationController::class, 'archive']);       // Restaurer un utilisateur archivé
+    Route::get('/reservations/user/{userId}', [ReservationController::class, 'getUserReservations']);
+
 
 
 
@@ -107,6 +116,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/character-archived/{id}', [CharacterController::class, 'showArchivedCharacter']);
     Route::post('/character/{id}/archive', [CharacterController::class, 'archive']);
     Route::post('/character/{id}/restore', [CharacterController::class, 'restore']);
+
+    Route::get('/reservations', [ReservationController::class, 'index']); // Liste de toutes les réservations
+    Route::get('/reservations-archived', [ReservationController::class, 'archivedReservation']);
+    Route::get('/reservations-archived/{id}', [ReservationController::class, 'showArchivedReservation']);
+    Route::post('/reservations/{id}/restore', [ReservationController::class, 'restore']);
 
 
 });
