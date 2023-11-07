@@ -66,7 +66,7 @@ class Reservation extends Model
     {
         $nights = (new \DateTime($this->arrival_date))->diff(new \DateTime($this->starting_date))->days;
 
-        $accommodatiionCost = $this->accommodation->prix * $nights * $this->number_of_people;
+        $accommodatiionCost = $this->accommodation->price * $nights * $this->number_of_people;
 
         return $accommodatiionCost;
     }

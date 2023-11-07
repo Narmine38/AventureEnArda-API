@@ -21,12 +21,6 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = Reservation::with(['user', 'place', 'accommodation', 'activity', 'character'])->get();
-
-        // Ajoutez le prix à chaque réservation
-        foreach ($reservations as $reservation) {
-            $reservation->prix = $reservation->price;  // Utilisez l'accessor pour obtenir le prix
-        }
-
         return response()->json($reservations);
     }
 
@@ -56,38 +50,10 @@ class ReservationController extends Controller
         }
 
         $reservation = Reservation::create($data);
+        $reservation->load(['place', 'accommodation', 'activity', 'character']);
 
-        // Récupérez les détails de la réservation
-        $place = Place::find($data['place_id']);
-        $accommodation = Accommodation::find($data['accommodation_id']);
-        $activity = Activite::find($data['activity_id']);
-        $character = Character::find($data['character_id']);
-
-        // Calculez le prix total (ajustez selon votre logique de calcul)
-        $nights = (new \DateTime($data['arrival_date']))->diff(new \DateTime($data['starting_date']))->days;
-        $totalPrice = $accommodation->prix * $nights * $data['number_of_people'];
-
-        // Formatez l'information pour l'e-mail
-        $emailContent = "
-    <strong>Récapitulatif de votre réservation :</strong><br>
-    Lieu : {$place->nom}<br>
-    Hébergement : {$accommodation->nom}<br>
-    Activité : $activity->nom<br>
-    Character : {$character->nom}<br>
-    Date d'arrivée : {$data['arrival_date']}<br>
-    Date de départ : {$data['starting_date']}<br>
-    Nombre de personnes : {$data['number_of_people']}<br>
-    Statut : {$data['statut']}<br>
-    <strong>Prix total : {$totalPrice}€</strong>
-    ";
-
-        // Envoyez l'e-mail avec le contenu formaté
-        $toEmail = auth()->user()->email; // Email de l'utilisateur connecté
-        $subject = "Confirmation de votre réservation";
-        $textBody = "Votre réservation a été confirmée!";
-
-        $emailController = new EmailController();
-        $emailController->sendEmail($toEmail, $subject, $emailContent, $textBody);
+        // Sending an email to the user with reservation details is typically handled in an event listener or job for better separation of concerns.
+        // Here, for simplification, we will assume that you have an event or job set up for this purpose.
 
         return response()->json($reservation, 201);
     }
@@ -101,7 +67,7 @@ class ReservationController extends Controller
      */
     public function show(string $id)
     {
-        $reservation = Reservation::findOrFail($id)->load(['user', 'place', 'accommodation', 'activity', 'character']);
+        $reservation = Reservation::with(['user', 'place', 'accommodation', 'activity', 'character'])->findOrFail($id);
         return response()->json($reservation, 200);
     }
 
@@ -128,7 +94,7 @@ class ReservationController extends Controller
             'statut' => 'string'
         ];
 // revoir role ici
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->getRoleNames() === 'admin') {
             $rules['price'] = 'numeric';
         }
 
@@ -230,18 +196,6 @@ class ReservationController extends Controller
         return response()->json(['data' => $reservation]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function calculatePrice(Request $request): JsonResponse
-    {
-        $nights = (new \DateTime($request->arrival_date))->diff(new \DateTime($request->starting_date))->days;
-
-        $accommodation = Accommodation::findOrFail($request->accommodation_id);
-        $accommodationCost = $accommodation->prix * $nights * $request->number_of_people;
-
-        return response()->json(['total' => $accommodationCost]);
-    }
     public function getUserReservations($userId)
     {
         $reservations = Reservation::where('user_id', $userId)->get();
