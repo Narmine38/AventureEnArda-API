@@ -77,6 +77,7 @@ class UserController extends Controller
             'phone_number' => 'sometimes|string|max:15',
             'postal_code' => 'sometimes|string|max:15',
             'address' => 'sometimes|string|max:255',
+            'password' => 'sometimes|nullable|min:6',
         ]);
 
         if (isset($data['password'])) {

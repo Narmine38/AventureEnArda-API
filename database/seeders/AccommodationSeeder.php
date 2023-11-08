@@ -25,5 +25,16 @@ class AccommodationSeeder extends Seeder
             'place_id' => 1, // Associez à 'La Comté'
         ]);
 
+        Accommodation::create([
+            'name' => 'Appartements Elfiques de Rivendell',
+            'description' => "Logements élégants avec des vues sur les chutes d'eau et les jardins elfiques.",
+            'type' => 'Appartement',
+            'price' => 149.99,
+            'picture' => 'rivendell_elf.jpg',
+            'story' => "Séjournez dans la demeure des Elfes, avec tout le confort et la beauté de Rivendell.",
+            'place_id' => 2, // Rivendell
+
+        ]);
+
     }
 }

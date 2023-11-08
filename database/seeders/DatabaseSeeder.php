@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             AccommodationSeeder::class,
             ActivitesTableSeeder::class,
             CharactersTableSeeder::class,
+            ReservationSeeder::class
 
 
         ]);
