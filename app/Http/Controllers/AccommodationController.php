@@ -32,7 +32,7 @@ class AccommodationController extends Controller
             'description' => 'required|string',
             'type' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'picture' => 'required|string', // Assurez-vous de valider correctement si 'picture' est un fichier
+            'picture' => 'required|string',
             'story' => 'nullable|string',
             'place_id' => 'required|integer|exists:places,id'
         ]);
